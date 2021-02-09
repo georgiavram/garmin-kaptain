@@ -11,8 +11,8 @@ class Paint {
 }
 
 fun render(paint: Paint?, rectangles: List<Rectangle?>) {
-    paint?.let { newPaint ->
-        newPaint.color = 0xFF0000
-        rectangles.forEach { rect -> rect?.let { newPaint.drawRectangle(it) } }
+    paint?.apply {
+        color = 0xFF0000
+        rectangles.forEach { rect -> rect?.let { drawRectangle(it) } }
     }
 }

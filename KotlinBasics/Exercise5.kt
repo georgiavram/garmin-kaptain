@@ -22,6 +22,6 @@ fun main(){
     println("1. Minimum heart rate value = ${data.minByOrNull { it.value }?.value}")
     println("2. Average heart rate value = ${data.map { it.value }.average()}")
     println("3. Heart rate values above 100 = ${data.filter { it.value > 100 }.map { it.value }}")
-    println("4. Heart rate values grouped = ${data.groupBy { Date(it.date) }.mapValues { entries -> entries.value.map { it.value } }}")
-    println("5. Maximum heart rate per day = ${data.groupBy { Date(it.date) }.mapValues { entries -> entries.value.map { it.value }.maxByOrNull { it } }}")
+    println("4. Heart rate values grouped = ${data.groupBy { it.date }.mapValues { entry -> entry.value.map { it.value } }}")
+    println("5. Maximum heart rate per day = ${data.groupBy { it.date }.mapValues { entry -> entry.value.map { it.value }.maxByOrNull { it } }}")
 }
