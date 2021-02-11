@@ -6,15 +6,15 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.garmin.garminkaptain.R
 import com.garmin.garminkaptain.TAG
 import com.garmin.garminkaptain.data.poiList
+import com.garmin.garminkaptain.databinding.PoiDetailsFragment2Binding
 
 class PoiDetailsFragment : Fragment() {
 
+    private lateinit var binding: PoiDetailsFragment2Binding
     private val poi = poiList.first()
 
     override fun onAttach(context: Context) {
@@ -37,16 +37,16 @@ class PoiDetailsFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         Log.d(TAG, "onViewCreated: called")
-        view.apply {
-            findViewById<TextView>(R.id.poi_name_view).text = poi.name
-            findViewById<TextView>(R.id.poi_type_view).text = poi.poiType
-            findViewById<TextView>(R.id.poi_rating_view).text =
-                getString(R.string.label_rating, poi.reviewSummary.averageRating)
-            findViewById<TextView>(R.id.poi_num_reviews_view).text =
+        binding = PoiDetailsFragment2Binding.bind(view)
+        binding.apply {
+            poiNameView.text = poi.name
+            poiTypeView.text = poi.poiType
+            poiRatingView.rating = poi.reviewSummary.averageRating.toFloat()
+            poiNumReviewsView.text =
                 getString(R.string.label_num_reviews, poi.reviewSummary.numberOfReviews)
-            findViewById<Button>(R.id.poi_view_reviews_button).isEnabled =
-                poi.reviewSummary.numberOfReviews > 0
+            poiViewReviewsButton.isEnabled = poi.reviewSummary.numberOfReviews > 0
         }
     }
 

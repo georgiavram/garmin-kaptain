@@ -28,36 +28,39 @@
         app:layout_constraintTop_toBottomOf="@+id/poi_name_view"
         tools:text="Bridge" />
 
-    <TextView
+    <RatingBar
         android:id="@+id/poi_rating_view"
+        style="@style/Widget.AppCompat.RatingBar.Indicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_large"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-        app:layout_constraintEnd_toStartOf="@+id/poi_num_reviews_view"
+        android:layout_marginVertical="@dimen/spacing_large"
+        android:numStars="5"
+        android:progressTint="@color/rating_star"
+        android:rating="4"
+        android:secondaryProgressTint="@color/rating_star"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/poi_type_view"
-        tools:text="Rating: 5.0" />
+        app:layout_constraintTop_toBottomOf="@+id/poi_type_view" />
 
     <TextView
         android:id="@+id/poi_num_reviews_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_large"
+        android:layout_marginTop="@dimen/spacing_normal"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/poi_rating_view"
-        app:layout_constraintTop_toBottomOf="@+id/poi_type_view"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/poi_rating_view"
         tools:text="Review count: 5" />
 
     <Button
         android:id="@+id/poi_view_reviews_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_large"
+        android:layout_marginTop="@dimen/spacing_normal"
         android:text="@string/label_view_reviews"
         android:textAllCaps="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/poi_rating_view" />
+        app:layout_constraintTop_toBottomOf="@+id/poi_num_reviews_view" />
 </androidx.constraintlayout.widget.ConstraintLayout>
