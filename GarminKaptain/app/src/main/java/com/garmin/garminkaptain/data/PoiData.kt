@@ -1,12 +1,23 @@
 package com.garmin.garminkaptain.data
 
+import android.os.Parcelable
+import com.garmin.garminkaptain.generateUserReviews
+import kotlinx.parcelize.Parcelize
+import java.util.*
+
 data class PointOfInterest(
     val id: Long,
     val mapLocation: MapLocation,
     val name: String,
     val poiType: String,
-    val reviewSummary: ReviewSummary
-)
+    var reviewSummary: ReviewSummary,
+    var userReviews: List<UserReview> = listOf()
+) {
+    init {
+        userReviews = if (reviewSummary.numberOfReviews > 0) generateUserReviews(this) else listOf()
+        reviewSummary.averageRating = userReviews.map { it.rating }.average()
+    }
+}
 
 data class MapLocation(
     val latitude: Double,
@@ -14,9 +25,19 @@ data class MapLocation(
 )
 
 data class ReviewSummary(
-    val averageRating: Double,
+    var averageRating: Double,
     val numberOfReviews: Int
 )
+
+@Parcelize
+data class UserReview(
+    val id: Long,
+    val rating: Double,
+    val username: String,
+    val title: String,
+    val review: String,
+    val date: Date
+) : Parcelable
 
 val poiList: List<PointOfInterest> = listOf(
     PointOfInterest(

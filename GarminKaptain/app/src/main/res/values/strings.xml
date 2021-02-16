@@ -5,4 +5,6 @@
     <string name="label_num_reviews">Review count: %1$d</string>
     <string name="label_list">List</string>
     <string name="label_map">Map</string>
+    <string name="user_avatar">User avatar</string>
+    <string name="rating">( %1$s )</string>
 </resources>

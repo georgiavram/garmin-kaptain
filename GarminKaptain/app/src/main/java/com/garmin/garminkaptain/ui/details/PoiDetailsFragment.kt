@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.garmin.garminkaptain.R
 import com.garmin.garminkaptain.TAG
@@ -50,6 +51,11 @@ class PoiDetailsFragment : Fragment() {
                 poiNumReviewsView.text =
                     getString(R.string.label_num_reviews, poi.reviewSummary.numberOfReviews)
                 poiViewReviewsButton.isEnabled = poi.reviewSummary.numberOfReviews > 0
+                poiViewReviewsButton.setOnClickListener {
+                    findNavController().navigate(
+                        PoiDetailsFragmentDirections.actionPoiDetailsFragmentToPoiReviewsFragment(poi.userReviews.toTypedArray())
+                    )
+                }
             }
         }
     }
