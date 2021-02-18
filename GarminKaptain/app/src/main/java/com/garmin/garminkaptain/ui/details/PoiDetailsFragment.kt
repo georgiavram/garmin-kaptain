@@ -57,7 +57,7 @@ class PoiDetailsFragment : Fragment() {
                     poiViewReviewsButton.isEnabled = poi.reviewSummary.numberOfReviews > 0
                     poiViewReviewsButton.setOnClickListener {
                         findNavController().navigate(
-                            PoiDetailsFragmentDirections.actionPoiDetailsFragmentToPoiReviewsFragment(poi.userReviews.toTypedArray())
+                            PoiDetailsFragmentDirections.actionPoiDetailsFragmentToPoiReviewsFragment()
                         )
                     }
                 }

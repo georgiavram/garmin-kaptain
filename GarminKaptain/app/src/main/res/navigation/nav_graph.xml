@@ -43,8 +43,5 @@
         android:name="com.garmin.garminkaptain.ui.details.PoiReviewsFragment"
         android:label="PoiReviewsFragment"
         tools:layout="@layout/reviews_list_fragment">
-        <argument
-            android:name="reviewsList"
-            app:argType="com.garmin.garminkaptain.data.UserReview[]" />
     </fragment>
 </navigation>

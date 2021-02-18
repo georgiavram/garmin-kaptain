@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.garmin.garminkaptain.TAG
 import com.garmin.garminkaptain.data.PointOfInterest
+import com.garmin.garminkaptain.data.UserReview
 import com.garmin.garminkaptain.model.PoiRepository
 
 class PoiViewModel : ViewModel() {
@@ -22,6 +23,10 @@ class PoiViewModel : ViewModel() {
         MutableLiveData<PointOfInterest>()
     }
 
+    private val reviewsLiveData: MutableLiveData<List<UserReview>> by lazy {
+        MutableLiveData<List<UserReview>>()
+    }
+
     fun getPoi(id: Long): LiveData<PointOfInterest> {
         loadPoi(id)
         return poiLiveData
@@ -32,8 +37,17 @@ class PoiViewModel : ViewModel() {
         return poiListLiveData
     }
 
+    fun getReviewsList(): LiveData<List<UserReview>> {
+        loadReviewsList()
+        return reviewsLiveData
+    }
+
     private fun loadPoiList() {
         poiListLiveData.postValue(PoiRepository.getPoiList())
+    }
+
+    private fun loadReviewsList() {
+        reviewsLiveData.postValue(poiLiveData.value?.userReviews)
     }
 
     private fun loadPoi(id: Long) {
