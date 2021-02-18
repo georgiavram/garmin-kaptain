@@ -7,16 +7,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.garmin.garminkaptain.R
 import com.garmin.garminkaptain.TAG
 import com.garmin.garminkaptain.data.poiList
 import com.garmin.garminkaptain.databinding.PoiDetailsFragment2Binding
+import com.garmin.garminkaptain.viewModel.PoiViewModel
 
 class PoiDetailsFragment : Fragment() {
     private lateinit var binding: PoiDetailsFragment2Binding
     private val args: PoiDetailsFragmentArgs by navArgs()
+    private val viewModel: PoiViewModel by activityViewModels()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -40,24 +44,25 @@ class PoiDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d(TAG, "onViewCreated: called")
-        val poiId = args.poiId
-        val poi = poiList.find { it.id == poiId }
         binding = PoiDetailsFragment2Binding.bind(view)
-        poi?.let {
-            binding.apply {
-                poiNameView.text = poi.name
-                poiTypeView.text = poi.poiType
-                poiRatingView.rating = poi.reviewSummary.averageRating.toFloat()
-                poiNumReviewsView.text =
-                    getString(R.string.label_num_reviews, poi.reviewSummary.numberOfReviews)
-                poiViewReviewsButton.isEnabled = poi.reviewSummary.numberOfReviews > 0
-                poiViewReviewsButton.setOnClickListener {
-                    findNavController().navigate(
-                        PoiDetailsFragmentDirections.actionPoiDetailsFragmentToPoiReviewsFragment(poi.userReviews.toTypedArray())
-                    )
+
+        viewModel.getPoi(args.poiId).observe(viewLifecycleOwner, { poi ->
+            poi?.let {
+                binding.apply {
+                    poiNameView.text = poi.name
+                    poiTypeView.text = poi.poiType
+                    poiRatingView.rating = poi.reviewSummary.averageRating.toFloat()
+                    poiNumReviewsView.text =
+                        getString(R.string.label_num_reviews, poi.reviewSummary.numberOfReviews)
+                    poiViewReviewsButton.isEnabled = poi.reviewSummary.numberOfReviews > 0
+                    poiViewReviewsButton.setOnClickListener {
+                        findNavController().navigate(
+                            PoiDetailsFragmentDirections.actionPoiDetailsFragmentToPoiReviewsFragment(poi.userReviews.toTypedArray())
+                        )
+                    }
                 }
             }
-        }
+        })
     }
 
     override fun onStart() {
