@@ -46,6 +46,9 @@ dependencies {
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
 
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2'
+
+
     // Nav Component
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
