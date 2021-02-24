@@ -5,22 +5,27 @@ import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.garmin.garminkaptain.R
 import com.garmin.garminkaptain.TAG
-import com.garmin.garminkaptain.data.poiList
 import com.garmin.garminkaptain.databinding.PoiDetailsFragment2Binding
 import com.garmin.garminkaptain.viewModel.PoiViewModel
 
 class PoiDetailsFragment : Fragment() {
     private lateinit var binding: PoiDetailsFragment2Binding
     private val args: PoiDetailsFragmentArgs by navArgs()
+
+    // Creates a single ViewModel per activity
     private val viewModel: PoiViewModel by activityViewModels()
+
+    // Creates a different ViewModel for each Fragment
+//    private val viewModel: PoiViewModel by viewModels()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -46,23 +51,31 @@ class PoiDetailsFragment : Fragment() {
         Log.d(TAG, "onViewCreated: called")
         binding = PoiDetailsFragment2Binding.bind(view)
 
-        viewModel.getPoi(args.poiId).observe(viewLifecycleOwner, { poi ->
-            poi?.let {
-                binding.apply {
-                    poiNameView.text = poi.name
-                    poiTypeView.text = poi.poiType
-                    poiRatingView.rating = poi.reviewSummary.averageRating.toFloat()
-                    poiNumReviewsView.text =
-                        getString(R.string.label_num_reviews, poi.reviewSummary.numberOfReviews)
-                    poiViewReviewsButton.isEnabled = poi.reviewSummary.numberOfReviews > 0
-                    poiViewReviewsButton.setOnClickListener {
-                        findNavController().navigate(
-                            PoiDetailsFragmentDirections.actionPoiDetailsFragmentToPoiReviewsFragment()
-                        )
+        viewModel.getLoading().observe(
+            viewLifecycleOwner, {
+                binding.poiProgress.visibility = if (it) VISIBLE else GONE
+            })
+
+        viewModel.getPoi(args.poiId)
+            .observe(viewLifecycleOwner, { poi ->
+                println(poi.toString())
+                poi?.let {
+                    binding.apply {
+                        poiDetailsGroup.visibility = VISIBLE
+                        poiNameView.text = poi.name
+                        poiTypeView.text = poi.poiType
+                        poiRatingView.rating = poi.reviewSummary.averageRating.toFloat()
+                        poiNumReviewsView.text =
+                            getString(R.string.label_num_reviews, poi.reviewSummary.numberOfReviews)
+                        poiViewReviewsButton.isEnabled = poi.reviewSummary.numberOfReviews > 0
+                        poiViewReviewsButton.setOnClickListener {
+                            findNavController().navigate(
+                                PoiDetailsFragmentDirections.actionPoiDetailsFragmentToPoiReviewsFragment(args.poiId)
+                            )
+                        }
                     }
                 }
-            }
-        })
+            })
     }
 
     override fun onStart() {

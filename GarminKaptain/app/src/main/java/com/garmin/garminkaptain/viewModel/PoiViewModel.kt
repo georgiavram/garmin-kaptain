@@ -1,10 +1,7 @@
 package com.garmin.garminkaptain.viewModel
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.garmin.garminkaptain.TAG
 import com.garmin.garminkaptain.data.PointOfInterest
 import com.garmin.garminkaptain.data.UserReview
@@ -12,9 +9,22 @@ import com.garmin.garminkaptain.model.PoiRepository
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class PoiViewModel : ViewModel() {
+
+    private val poiListLiveData: MutableLiveData<List<PointOfInterest>> by lazy {
+        MutableLiveData<List<PointOfInterest>>()
+    }
+
+    private val loadingLiveData: MutableLiveData<Boolean> by lazy {
+        MutableLiveData<Boolean>()
+    }
+
+    private val loadingDetailsLiveData: MutableLiveData<Boolean> by lazy {
+        MutableLiveData<Boolean>()
+    }
 
     init {
         Log.d(TAG, "init called")
@@ -30,41 +40,40 @@ class PoiViewModel : ViewModel() {
         }
     }
 
-    private val poiListLiveData: MutableLiveData<List<PointOfInterest>> by lazy {
-        MutableLiveData<List<PointOfInterest>>()
+    fun getPoi(id: Long): LiveData<PointOfInterest?> = liveData {
+        loadingDetailsLiveData.postValue(true)
+        PoiRepository.getPoi(id).collect {
+            emit(it)
+            loadingDetailsLiveData.postValue(false)
+        }
     }
 
-    private val poiLiveData: MutableLiveData<PointOfInterest> by lazy {
-        MutableLiveData<PointOfInterest>()
+    fun getPoiList(): LiveData<List<PointOfInterest>> {
+        loadPoiList()
+        return poiListLiveData
     }
 
-    private val reviewsLiveData: MutableLiveData<List<UserReview>> by lazy {
-        MutableLiveData<List<UserReview>>()
+    fun getReviewsList(poiId: Long): LiveData<List<UserReview>> = liveData {
+        loadingDetailsLiveData.postValue(true)
+        PoiRepository.getPoi(poiId).collect { poi ->
+            poi?.userReviews?.let { userReviews -> emit(userReviews) }
+            loadingDetailsLiveData.postValue(false)
+        }
     }
 
-    fun getPoi(id: Long): LiveData<PointOfInterest> {
-        loadPoi(id)
-        return poiLiveData
+    fun loadPoiList() {
+        loadingLiveData.postValue(true)
+        viewModelScope.launch {
+            PoiRepository.getPoiList().collect {
+                poiListLiveData.postValue(it)
+                loadingLiveData.postValue(false)
+            }
+        }
     }
 
-    fun getPoiList(): LiveData<List<PointOfInterest>> = poiListLiveData
+    fun getLoading(): LiveData<Boolean> = loadingDetailsLiveData
 
-    fun getReviewsList(): LiveData<List<UserReview>> {
-        loadReviewsList()
-        return reviewsLiveData
-    }
-
-    private fun loadPoiList() {
-        poiListLiveData.postValue(PoiRepository.getPoiList())
-    }
-
-    private fun loadReviewsList() {
-        reviewsLiveData.postValue(poiLiveData.value?.userReviews)
-    }
-
-    private fun loadPoi(id: Long) {
-        poiLiveData.postValue(PoiRepository.getPoi(id))
-    }
+    fun getLoadingList(): LiveData<Boolean> = loadingLiveData
 
     override fun onCleared() {
         super.onCleared()

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.garmin.garminkaptain.R
@@ -25,10 +26,19 @@ class PoiListFragment : Fragment(R.layout.poi_list_fragment), PoiListAdapter.Poi
             layoutManager = LinearLayoutManager(context)
             adapter = poiListAdapter
         }
-        viewModel.getPoiList().observe(viewLifecycleOwner, {
-            pointsOfInterest = it
-            poiListAdapter.submitList(it)
-        })
+
+        binding.swipeToRefresh.setOnRefreshListener { viewModel.loadPoiList() }
+
+        viewModel.getPoiList()
+            .observe(viewLifecycleOwner, {
+                pointsOfInterest = it
+                poiListAdapter.submitList(it)
+            })
+
+        viewModel.getLoadingList()
+            .observe(viewLifecycleOwner, {
+                binding.swipeToRefresh.isRefreshing = it
+            })
     }
 
     override fun seeDetails(position: Int) {

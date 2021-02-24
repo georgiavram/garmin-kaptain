@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.garmin.garminkaptain.R
 import com.garmin.garminkaptain.databinding.ReviewsListFragmentBinding
@@ -14,6 +15,7 @@ class PoiReviewsFragment : Fragment(R.layout.reviews_list_fragment) {
     private lateinit var binding: ReviewsListFragmentBinding
     private val reviewsListAdapter = ReviewsListAdapter()
     private val viewModel: PoiViewModel by activityViewModels()
+    private val args: PoiReviewsFragmentArgs by navArgs()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = ReviewsListFragmentBinding.bind(view)
@@ -22,8 +24,15 @@ class PoiReviewsFragment : Fragment(R.layout.reviews_list_fragment) {
             layoutManager = LinearLayoutManager(context)
             adapter = reviewsListAdapter
         }
-        viewModel.getReviewsList().observe(viewLifecycleOwner, {
-            reviewsListAdapter.submitList(it)
-        })
+        viewModel.getReviewsList(args.poiId)
+            .observe(viewLifecycleOwner, {
+                reviewsListAdapter.submitList(it)
+            })
+
+        viewModel.getLoading()
+            .observe(
+                viewLifecycleOwner, {
+                    binding.poiProgress.visibility = if (it) View.VISIBLE else View.GONE
+                })
     }
 }

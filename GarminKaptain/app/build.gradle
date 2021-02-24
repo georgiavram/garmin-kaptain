@@ -46,8 +46,14 @@ dependencies {
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
 
+    // SwipeRefresh Layout
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
+
+    // Coroutines
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2'
 
+    // LiveData
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.3.0"
 
     // Nav Component
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
