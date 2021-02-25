@@ -1,5 +1,6 @@
 package com.garmin.garminkaptain.model
 
+import com.garmin.garminkaptain.KaptainApplication
 import com.garmin.garminkaptain.data.PointOfInterest
 import com.garmin.garminkaptain.data.poiList
 import kotlinx.coroutines.delay
@@ -8,14 +9,10 @@ import kotlinx.coroutines.flow.flow
 
 object PoiRepository {
 
-    suspend fun getPoiList(): Flow<List<PointOfInterest>> = flow {
-        delay(2000)
-        emit(poiList)
-    }
+    fun getPoiList(application: KaptainApplication): Flow<List<PointOfInterest>> =
+        application.poiDatabase.getPoiDao().getAllPoi()
 
-    suspend fun getPoi(id: Long): Flow<PointOfInterest?> = flow {
-        delay(2000)
-        emit(poiList.find { it.id == id })
-    }
+    fun getPoi(application: KaptainApplication, id: Long): Flow<PointOfInterest> =
+        application.poiDatabase.getPoiDao().getPoi(id)
 
 }
