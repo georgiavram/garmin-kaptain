@@ -4,6 +4,7 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.*
 import com.garmin.garminkaptain.TAG
+import com.garmin.garminkaptain.data.PoiDatabase
 import com.garmin.garminkaptain.data.PointOfInterest
 import com.garmin.garminkaptain.data.UserReview
 import com.garmin.garminkaptain.model.PoiRepository
@@ -14,6 +15,9 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class PoiViewModel(application: Application) : AndroidViewModel(application) {
+    private val poiRepository: PoiRepository by lazy {
+        PoiRepository(PoiDatabase.getInstance(application).getPoiDao())
+    }
 
     private val poiListLiveData: MutableLiveData<List<PointOfInterest>> by lazy {
         MutableLiveData<List<PointOfInterest>>()
@@ -43,7 +47,7 @@ class PoiViewModel(application: Application) : AndroidViewModel(application) {
 
     fun getPoi(id: Long): LiveData<PointOfInterest?> = liveData {
         loadingDetailsLiveData.postValue(true)
-        PoiRepository.getPoi(getApplication(), id).collect {
+        poiRepository.getPoi(id).collect {
             emit(it)
             loadingDetailsLiveData.postValue(false)
         }
@@ -56,7 +60,7 @@ class PoiViewModel(application: Application) : AndroidViewModel(application) {
 
     fun getReviewsList(poiId: Long): LiveData<List<UserReview>> = liveData {
         loadingDetailsLiveData.postValue(true)
-        PoiRepository.getPoi(getApplication(), poiId).collect { poi ->
+        poiRepository.getPoi(poiId).collect { poi ->
             emit(poi.userReviews)
             loadingDetailsLiveData.postValue(false)
         }
@@ -65,7 +69,7 @@ class PoiViewModel(application: Application) : AndroidViewModel(application) {
     fun loadPoiList() {
         loadingLiveData.postValue(true)
         viewModelScope.launch {
-            PoiRepository.getPoiList(getApplication()).collect {
+            poiRepository.getPoiList().collect {
                 poiListLiveData.postValue(it)
                 loadingLiveData.postValue(false)
             }
