@@ -1,9 +1,6 @@
 package com.garmin.garminkaptain.data
 
-import androidx.room.Embedded
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import androidx.room.Relation
+import androidx.room.*
 import java.util.*
 
 @Entity(tableName = "poi_table")
@@ -14,7 +11,10 @@ data class PointOfInterest(
 )
 
 
-@Entity(tableName = "map_location")
+@Entity(
+    tableName = "map_location",
+    foreignKeys = [ForeignKey(entity = PointOfInterest::class, parentColumns = ["id"], childColumns = ["poiId"], onDelete = ForeignKey.CASCADE)]
+)
 data class MapLocation(
     @PrimaryKey(autoGenerate = true) val locationId: Long,
     var poiId: Long,
@@ -24,7 +24,10 @@ data class MapLocation(
     constructor(poiId: Long, latitude: Double, longitude: Double) : this(0, poiId, latitude, longitude)
 }
 
-@Entity(tableName = "review_summary")
+@Entity(
+    tableName = "review_summary",
+    foreignKeys = [ForeignKey(entity = PointOfInterest::class, parentColumns = ["id"], childColumns = ["poiId"], onDelete = ForeignKey.CASCADE)]
+)
 data class ReviewSummary(
     @PrimaryKey(autoGenerate = true) val summaryId: Long,
     var poiId: Long,
@@ -34,7 +37,10 @@ data class ReviewSummary(
     constructor(poiId: Long, averageRating: Double, numberOfReviews: Int) : this(0, poiId, averageRating, numberOfReviews)
 }
 
-@Entity(tableName = "user_review")
+@Entity(
+    tableName = "user_review",
+    foreignKeys = [ForeignKey(entity = PointOfInterest::class, parentColumns = ["id"], childColumns = ["poiId"], onDelete = ForeignKey.CASCADE)]
+)
 data class UserReview(
     @PrimaryKey val id: Long,
     val poiId: Long,
@@ -59,7 +65,8 @@ data class PoiDTO(
     val mapLocation: MapLocation,
     @Relation(
         parentColumn = "id",
-        entityColumn = "poiId"
-    )
+        entityColumn = "poiId",
+
+        )
     val reviewSummary: ReviewSummary
 )

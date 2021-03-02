@@ -16,4 +16,6 @@ class PoiRepository(private val poiDao: PoiDao) {
     suspend fun getPoiDTO(id: Long) = poiDao.getPoiWithReviews(id)
 
     suspend fun getReviews(id: Long) = poiDao.getPoiWithReviews(id).list
+
+    suspend fun deletePoiById(id: Long) = poiDao.deletePoiById(id)
 }

@@ -6,7 +6,6 @@ import androidx.lifecycle.*
 import com.garmin.garminkaptain.TAG
 import com.garmin.garminkaptain.data.PoiDTO
 import com.garmin.garminkaptain.data.PoiDatabase
-import com.garmin.garminkaptain.data.PointOfInterest
 import com.garmin.garminkaptain.model.PoiRepository
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.Dispatchers
@@ -66,6 +65,13 @@ class PoiViewModel(application: Application) : AndroidViewModel(application) {
     fun getLoading(): LiveData<Boolean> = loadingDetailsLiveData
 
     fun getLoadingList(): LiveData<Boolean> = loadingLiveData
+
+    fun deletePoi(id: Long) {
+        viewModelScope.launch {
+            poiRepository.deletePoiById(id)
+            loadPoiList()
+        }
+    }
 
     override fun onCleared() {
         super.onCleared()
