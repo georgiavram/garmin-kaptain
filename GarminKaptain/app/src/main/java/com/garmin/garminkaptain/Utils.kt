@@ -15,15 +15,20 @@ fun generateUserReviews(poi: PointOfInterest): List<UserReview> {
     val date = Calendar.getInstance().time
     for (i in 1..number) {
         reviews.add(
-            UserReview(
-                Random.nextLong(9999),
-                Random.nextDouble(1.00, 5.00),
-                "${firstNames.random()} ${lastNames.random()}",
-                "${poi.name} ${titleExtra.random()}",
-                "Dummy text",
-                date
-            )
+            generateUserReview(poi, date)
         )
     }
     return reviews
 }
+
+private fun generateUserReview(poi: PointOfInterest, date: Date) = UserReview(
+    Random.nextLong(9999),
+    poi.id,
+    Random.nextDouble(1.00, 5.00),
+    generateString(),
+    "${poi.name} ${titleExtra.random()}",
+    "Dummy text",
+    date
+)
+
+private fun generateString() = "${firstNames.random()} ${lastNames.random()}"

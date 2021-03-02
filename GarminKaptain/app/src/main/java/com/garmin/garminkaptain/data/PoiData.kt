@@ -1,9 +1,6 @@
 package com.garmin.garminkaptain.data
 
-import androidx.room.Embedded
-import androidx.room.Entity
-import androidx.room.Ignore
-import androidx.room.PrimaryKey
+import androidx.room.*
 import com.garmin.garminkaptain.generateUserReviews
 import java.util.*
 
@@ -24,15 +21,6 @@ data class PointOfInterest(
         reviewSummary,
         listOf()
     )
-
-    init {
-        if (reviewSummary.numberOfReviews > 0) {
-            userReviews = generateUserReviews(this)
-            reviewSummary.averageRating = userReviews.map { it.rating }.average()
-        } else {
-            userReviews = listOf()
-        }
-    }
 }
 
 data class MapLocation(
@@ -45,11 +33,22 @@ data class ReviewSummary(
     var numberOfReviews: Int
 )
 
+@Entity(tableName = "user_review")
 data class UserReview(
-    val id: Long,
+    @PrimaryKey val id: Long,
+    val poiId: Long,
     val rating: Double,
     val username: String,
     val title: String,
     val review: String,
     val date: Date
+)
+
+data class PoiWithReviews(
+    @Embedded val poi: PointOfInterest,
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "poiId"
+    )
+    val list: List<UserReview>
 )

@@ -4,11 +4,14 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
+import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-@Database(entities = [PointOfInterest::class], version = 1)
+@Database(entities = [PointOfInterest::class, UserReview::class], version = 2)
+@TypeConverters(Converters::class)
 abstract class PoiDatabase : RoomDatabase() {
     abstract fun getPoiDao(): PoiDao
 
@@ -18,11 +21,27 @@ abstract class PoiDatabase : RoomDatabase() {
         private const val DATABASE_NAME = "poi-database"
 
         private val roomListener = object : RoomDatabase.Callback() {
-            override fun onCreate(db: SupportSQLiteDatabase) {
-                super.onCreate(db)
+            override fun onOpen(db: SupportSQLiteDatabase) {
+                super.onOpen(db)
                 GlobalScope.launch {
                     INSTANCE?.getPoiDao()?.insertAllPoi(poiList)
+
+                    poiList.forEach {
+                        INSTANCE?.getPoiDao()?.insertAllReviews(reviews[it.id])
+                    }
                 }
+            }
+        }
+
+        private val MIGRATION_1_2 = object : Migration(1, 2) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL(
+                    "CREATE TABLE `user_review` (`id` INTEGER NOT NULL, `poiId` INTEGER NOT NULL, `rating` REAL NOT NULL," +
+                            "`username` TEXT NOT NULL, " +
+                            "`title` TEXT NOT NULL, `review` TEXT NOT NULL, " +
+                            "`date` INTEGER NOT NULL, " +
+                            "PRIMARY KEY(`id`))"
+                )
             }
         }
 
@@ -32,7 +51,7 @@ abstract class PoiDatabase : RoomDatabase() {
                 PoiDatabase::class.java,
                 DATABASE_NAME
             )
-                .addCallback(roomListener)
+                .addMigrations(MIGRATION_1_2)
                 .build()
         }
 

@@ -9,4 +9,6 @@ class PoiRepository(private val poiDao: PoiDao) {
     fun getPoiList(): Flow<List<PointOfInterest>> = poiDao.getAllPoi()
 
     fun getPoi(id: Long): Flow<PointOfInterest> = poiDao.getPoi(id)
+
+    suspend fun getReviews(id: Long) = poiDao.getPoiWithReviews(id).list
 }

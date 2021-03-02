@@ -1,5 +1,8 @@
 package com.garmin.garminkaptain.data
 
+import android.util.LongSparseArray
+import com.garmin.garminkaptain.generateUserReviews
+
 val poiList: List<PointOfInterest> = listOf(
     PointOfInterest(
         46067,
@@ -72,3 +75,12 @@ val poiList: List<PointOfInterest> = listOf(
         ReviewSummary(0.0, 0)
     )
 )
+
+val reviews = LongSparseArray<List<UserReview>>(poiList.size).also { map ->
+    poiList.forEach {
+        map.put(
+            it.id,
+            generateUserReviews(it)
+        )
+    }
+}
