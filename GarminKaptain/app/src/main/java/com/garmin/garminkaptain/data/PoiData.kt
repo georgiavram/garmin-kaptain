@@ -10,18 +10,8 @@ data class PointOfInterest(
     @Embedded val mapLocation: MapLocation,
     val name: String,
     val poiType: String,
-    @Embedded val reviewSummary: ReviewSummary,
-    @Ignore var userReviews: List<UserReview>
-) {
-    constructor(id: Long, mapLocation: MapLocation, name: String, poiType: String, reviewSummary: ReviewSummary) : this(
-        id,
-        mapLocation,
-        name,
-        poiType,
-        reviewSummary,
-        listOf()
-    )
-}
+    @Embedded val reviewSummary: ReviewSummary
+)
 
 data class MapLocation(
     val latitude: Double,

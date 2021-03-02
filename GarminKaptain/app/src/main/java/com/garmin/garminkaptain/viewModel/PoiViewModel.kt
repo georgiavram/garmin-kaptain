@@ -58,14 +58,6 @@ class PoiViewModel(application: Application) : AndroidViewModel(application) {
         return poiListLiveData
     }
 
-    fun getReviewsList(poiId: Long): LiveData<List<UserReview>> = liveData {
-        loadingDetailsLiveData.postValue(true)
-        poiRepository.getPoi(poiId).collect { poi ->
-            emit(poi.userReviews)
-            loadingDetailsLiveData.postValue(false)
-        }
-    }
-
     fun loadPoiList() {
         loadingLiveData.postValue(true)
         viewModelScope.launch {

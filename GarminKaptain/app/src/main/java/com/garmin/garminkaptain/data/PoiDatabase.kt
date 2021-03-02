@@ -37,10 +37,8 @@ abstract class PoiDatabase : RoomDatabase() {
             override fun migrate(database: SupportSQLiteDatabase) {
                 database.execSQL(
                     "CREATE TABLE `user_review` (`id` INTEGER NOT NULL, `poiId` INTEGER NOT NULL, `rating` REAL NOT NULL," +
-                            "`username` TEXT NOT NULL, " +
-                            "`title` TEXT NOT NULL, `review` TEXT NOT NULL, " +
-                            "`date` INTEGER NOT NULL, " +
-                            "PRIMARY KEY(`id`))"
+                            "`username` TEXT NOT NULL, `title` TEXT NOT NULL, `review` TEXT NOT NULL, " +
+                            "`date` INTEGER NOT NULL, PRIMARY KEY(`id`))"
                 )
             }
         }

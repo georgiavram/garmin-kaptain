@@ -7,4 +7,6 @@
     <string name="label_map">Map</string>
     <string name="user_avatar">User avatar</string>
     <string name="rating">( %1$s )</string>
+    <string name="label_sort">Sort</string>
+    <string name="label_poi_sort">Poi Sort</string>
 </resources>

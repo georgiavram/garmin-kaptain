@@ -14,6 +14,9 @@ class ReviewViewModel(application: Application) : AndroidViewModel(application) 
     private val _reviewLiveData: MutableLiveData<List<UserReview>> by lazy {
         MutableLiveData<List<UserReview>>()
     }
+    private val loadingLiveData: MutableLiveData<Boolean> by lazy {
+        MutableLiveData<Boolean>()
+    }
     private val poiRepository: PoiRepository by lazy {
         PoiRepository(PoiDatabase.getInstance(application).getPoiDao())
     }
@@ -21,7 +24,13 @@ class ReviewViewModel(application: Application) : AndroidViewModel(application) 
     val reviewLiveData: LiveData<List<UserReview>>
         get() = _reviewLiveData
 
-    fun getReviews(id: Long) = viewModelScope.launch {
-        _reviewLiveData.postValue(poiRepository.getReviews(id))
+    fun getReviews(id: Long) {
+        loadingLiveData.postValue(true)
+        viewModelScope.launch {
+            _reviewLiveData.postValue(poiRepository.getReviews(id))
+            loadingLiveData.postValue(false)
+        }
     }
+
+    fun getLoading(): LiveData<Boolean> = loadingLiveData
 }

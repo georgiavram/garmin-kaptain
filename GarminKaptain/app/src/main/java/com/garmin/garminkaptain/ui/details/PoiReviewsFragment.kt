@@ -29,5 +29,9 @@ class PoiReviewsFragment : Fragment(R.layout.reviews_list_fragment) {
             .observe(viewLifecycleOwner, {
                 reviewsListAdapter.submitList(it)
             })
+
+        viewModel.getLoading().observe(viewLifecycleOwner, {
+            binding.poiProgress.visibility = if (it) View.VISIBLE else View.GONE
+        })
     }
 }
