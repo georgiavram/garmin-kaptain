@@ -4,14 +4,13 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.*
 import com.garmin.garminkaptain.TAG
+import com.garmin.garminkaptain.data.PoiDTO
 import com.garmin.garminkaptain.data.PoiDatabase
 import com.garmin.garminkaptain.data.PointOfInterest
-import com.garmin.garminkaptain.data.UserReview
 import com.garmin.garminkaptain.model.PoiRepository
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class PoiViewModel(application: Application) : AndroidViewModel(application) {
@@ -19,8 +18,8 @@ class PoiViewModel(application: Application) : AndroidViewModel(application) {
         PoiRepository(PoiDatabase.getInstance(application).getPoiDao())
     }
 
-    private val poiListLiveData: MutableLiveData<List<PointOfInterest>> by lazy {
-        MutableLiveData<List<PointOfInterest>>()
+    private val poiListLiveData: MutableLiveData<List<PoiDTO>> by lazy {
+        MutableLiveData<List<PoiDTO>>()
     }
 
     private val loadingLiveData: MutableLiveData<Boolean> by lazy {
@@ -45,15 +44,13 @@ class PoiViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun getPoi(id: Long): LiveData<PointOfInterest?> = liveData {
+    fun getPoi(id: Long): LiveData<PoiDTO?> = liveData {
         loadingDetailsLiveData.postValue(true)
-        poiRepository.getPoi(id).collect {
-            emit(it)
-            loadingDetailsLiveData.postValue(false)
-        }
+        emit(poiRepository.getPoiDTO(id))
+        loadingDetailsLiveData.postValue(false)
     }
 
-    fun getPoiList(): LiveData<List<PointOfInterest>> {
+    fun getPoiList(): LiveData<List<PoiDTO>> {
         loadPoiList()
         return poiListLiveData
     }
@@ -61,10 +58,8 @@ class PoiViewModel(application: Application) : AndroidViewModel(application) {
     fun loadPoiList() {
         loadingLiveData.postValue(true)
         viewModelScope.launch {
-            poiRepository.getPoiList().collect {
-                poiListLiveData.postValue(it)
-                loadingLiveData.postValue(false)
-            }
+            poiListLiveData.postValue(poiRepository.getPoiDTOList())
+            loadingLiveData.postValue(false)
         }
     }
 

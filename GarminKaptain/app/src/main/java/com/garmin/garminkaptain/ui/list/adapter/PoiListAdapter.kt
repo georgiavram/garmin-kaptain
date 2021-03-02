@@ -6,10 +6,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.garmin.garminkaptain.data.PointOfInterest
+import com.garmin.garminkaptain.data.PoiDTO
 import com.garmin.garminkaptain.databinding.PoiListItemBinding
 
-class PoiListAdapter(private val listener: PoiListListener) : ListAdapter<PointOfInterest, PoiListAdapter.PoiListItemViewHolder>(PoiDiffUtilCallback()) {
+class PoiListAdapter(private val listener: PoiListListener) : ListAdapter<PoiDTO, PoiListAdapter.PoiListItemViewHolder>(PoiDiffUtilCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PoiListItemViewHolder {
         val binding = PoiListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -31,17 +31,17 @@ class PoiListAdapter(private val listener: PoiListListener) : ListAdapter<PointO
             }
         }
 
-        fun bind(pointOfInterest: PointOfInterest) {
-            poiItemName.text = pointOfInterest.name
-            poiItemType.text = pointOfInterest.poiType
+        fun bind(pointOfInterest: PoiDTO) {
+            poiItemName.text = pointOfInterest.poi.name
+            poiItemType.text = pointOfInterest.poi.poiType
         }
     }
 
-    private class PoiDiffUtilCallback : DiffUtil.ItemCallback<PointOfInterest>() {
+    private class PoiDiffUtilCallback : DiffUtil.ItemCallback<PoiDTO>() {
 
-        override fun areItemsTheSame(oldItem: PointOfInterest, newItem: PointOfInterest) = oldItem == newItem
+        override fun areItemsTheSame(oldItem: PoiDTO, newItem: PoiDTO) = oldItem.poi.id == newItem.poi.id
 
-        override fun areContentsTheSame(oldItem: PointOfInterest, newItem: PointOfInterest) = oldItem == newItem
+        override fun areContentsTheSame(oldItem: PoiDTO, newItem: PoiDTO) = oldItem == newItem
     }
 
     /**

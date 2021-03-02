@@ -1,6 +1,6 @@
 package com.garmin.garminkaptain
 
-import com.garmin.garminkaptain.data.PointOfInterest
+import com.garmin.garminkaptain.data.ReviewSummary
 import com.garmin.garminkaptain.data.UserReview
 import java.util.*
 import kotlin.random.Random
@@ -9,24 +9,23 @@ val firstNames = listOf("Michale", "Sarah", "Tom", "Jack", "Mary", "Rose", "Wilm
 val lastNames = listOf("Jackson", "Flintstones", "Rubble", "Slate")
 val titleExtra = listOf("Experience", "Adventure", "Escape", "Trip", "Tour", "Expedition")
 
-fun generateUserReviews(poi: PointOfInterest): List<UserReview> {
+fun generateUserReviews(reviewSummary: ReviewSummary): List<UserReview> {
     val reviews = mutableListOf<UserReview>()
-    val number = poi.reviewSummary.numberOfReviews
     val date = Calendar.getInstance().time
-    for (i in 1..number) {
+    for (i in 1..reviewSummary.numberOfReviews) {
         reviews.add(
-            generateUserReview(poi, date)
+            generateUserReview(reviewSummary.poiId, date)
         )
     }
     return reviews
 }
 
-private fun generateUserReview(poi: PointOfInterest, date: Date) = UserReview(
+private fun generateUserReview(poiId: Long, date: Date) = UserReview(
     Random.nextLong(9999),
-    poi.id,
+    poiId,
     Random.nextDouble(1.00, 5.00),
     generateString(),
-    "${poi.name} ${titleExtra.random()}",
+    titleExtra.random(),
     "Dummy text",
     date
 )

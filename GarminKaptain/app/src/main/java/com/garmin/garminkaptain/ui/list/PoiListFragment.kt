@@ -12,7 +12,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.garmin.garminkaptain.R
 import com.garmin.garminkaptain.TAG
-import com.garmin.garminkaptain.data.PointOfInterest
+import com.garmin.garminkaptain.data.PoiDTO
 import com.garmin.garminkaptain.databinding.PoiListFragmentBinding
 import com.garmin.garminkaptain.ui.list.adapter.PoiListAdapter
 import com.garmin.garminkaptain.viewModel.PoiViewModel
@@ -20,7 +20,7 @@ import com.garmin.garminkaptain.viewModel.PoiViewModel
 class PoiListFragment : Fragment(R.layout.poi_list_fragment), PoiListAdapter.PoiListListener, SharedPreferences.OnSharedPreferenceChangeListener {
     private lateinit var binding: PoiListFragmentBinding
     private val poiListAdapter = PoiListAdapter(this)
-    private var pointsOfInterest = listOf<PointOfInterest>()
+    private var pointsOfInterest = listOf<PoiDTO>()
     private val viewModel: PoiViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -51,9 +51,9 @@ class PoiListFragment : Fragment(R.layout.poi_list_fragment), PoiListAdapter.Poi
 
 
     override fun seeDetails(position: Int) {
-        val poi = pointsOfInterest[position]
+        val dto = pointsOfInterest[position]
         findNavController().navigate(
-            PoiListFragmentDirections.actionPoiListFragmentToPoiDetailsFragment(poi.id)
+            PoiListFragmentDirections.actionPoiListFragmentToPoiDetailsFragment(dto.poi.id)
         )
     }
 

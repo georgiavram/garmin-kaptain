@@ -15,6 +15,12 @@ interface PoiDao {
     @Insert
     suspend fun insertAllReviews(reviews: List<UserReview>)
 
+    @Insert
+    suspend fun insertAllMapLocations(reviews: List<MapLocation>)
+
+    @Insert
+    suspend fun insertAllReviewSummaries(reviews: List<ReviewSummary>)
+
     @Delete
     suspend fun deletePoi(poi: PointOfInterest)
 
@@ -29,10 +35,10 @@ interface PoiDao {
 
     @Transaction
     @Query("SELECT * FROM poi_table WHERE id=:id")
-    suspend fun getPoiWithReviews(id: Long): PoiWithReviews
+    suspend fun getPoiWithReviews(id: Long): PoiDTO
 
     @Transaction
     @Query("SELECT * FROM poi_table")
-    suspend fun getAllPoiWithReviews(): List<PoiWithReviews>
+    suspend fun getAllPoiDTOs(): List<PoiDTO>
 
 }
