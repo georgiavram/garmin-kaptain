@@ -29,8 +29,8 @@ data class MapLocation(
     foreignKeys = [ForeignKey(entity = PointOfInterest::class, parentColumns = ["id"], childColumns = ["poiId"], onDelete = ForeignKey.CASCADE)]
 )
 data class ReviewSummary(
-    @PrimaryKey(autoGenerate = true) val summaryId: Long,
-    var poiId: Long,
+    @PrimaryKey(autoGenerate = true) val summaryId: Long?,
+    var poiId: Long?,
     var averageRating: Double,
     var numberOfReviews: Int
 ) {
@@ -68,5 +68,5 @@ data class PoiDTO(
         entityColumn = "poiId",
 
         )
-    val reviewSummary: ReviewSummary
+    val reviewSummary: ReviewSummary?
 )

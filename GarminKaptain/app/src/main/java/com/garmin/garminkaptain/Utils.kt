@@ -13,9 +13,11 @@ fun generateUserReviews(reviewSummary: ReviewSummary): List<UserReview> {
     val reviews = mutableListOf<UserReview>()
     val date = Calendar.getInstance().time
     for (i in 1..reviewSummary.numberOfReviews) {
-        reviews.add(
-            generateUserReview(reviewSummary.poiId, date)
-        )
+        reviewSummary.poiId?.let { generateUserReview(it, date) }?.let {
+            reviews.add(
+                it
+            )
+        }
     }
     return reviews
 }

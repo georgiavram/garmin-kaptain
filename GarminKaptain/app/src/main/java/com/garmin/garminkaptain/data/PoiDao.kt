@@ -6,19 +6,19 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface PoiDao {
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPoi(poi: PointOfInterest)
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAllPoi(poiList: List<PointOfInterest>)
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAllReviews(reviews: List<UserReview>)
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAllMapLocations(reviews: List<MapLocation>)
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAllReviewSummaries(reviews: List<ReviewSummary>)
 
     @Query("DELETE FROM poi_table WHERE id=:id")
@@ -32,6 +32,9 @@ interface PoiDao {
 
     @Query("SELECT * from poi_table WHERE id=:id")
     fun getPoi(id: Long): Flow<PointOfInterest>
+
+    @Query("SELECT * from review_summary WHERE poiId=:id")
+    suspend fun getPoiReviewSummary(id: Long): ReviewSummary?
 
     @Transaction
     @Query("SELECT * FROM poi_table WHERE id=:id")

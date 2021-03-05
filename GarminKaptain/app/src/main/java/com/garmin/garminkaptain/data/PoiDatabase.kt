@@ -10,7 +10,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-@Database(entities = [PointOfInterest::class, UserReview::class, MapLocation::class, ReviewSummary::class], version = 3)
+@Database(entities = [PointOfInterest::class, UserReview::class, MapLocation::class, ReviewSummary::class], version = 5)
 @TypeConverters(Converters::class)
 abstract class PoiDatabase : RoomDatabase() {
     abstract fun getPoiDao(): PoiDao
@@ -25,6 +25,7 @@ abstract class PoiDatabase : RoomDatabase() {
                 super.onOpen(db)
                 GlobalScope.launch {
                     INSTANCE?.getPoiDao()?.apply {
+                        println(reviewSummaries.toString())
                         insertAllPoi(poiList)
                         insertAllMapLocations(mapLocations)
                         insertAllReviewSummaries(reviewSummaries)
@@ -79,7 +80,8 @@ abstract class PoiDatabase : RoomDatabase() {
                 PoiDatabase::class.java,
                 DATABASE_NAME
             )
-                .addMigrations(MIGRATION_2_3)
+                .fallbackToDestructiveMigration()
+                .addCallback(roomListener)
                 .build()
         }
 

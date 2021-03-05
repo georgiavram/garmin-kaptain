@@ -8,7 +8,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.garmin.garminkaptain.R
 import com.garmin.garminkaptain.data.PoiDTO
-import com.garmin.garminkaptain.data.PointOfInterest
 import com.garmin.garminkaptain.viewModel.PoiViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap

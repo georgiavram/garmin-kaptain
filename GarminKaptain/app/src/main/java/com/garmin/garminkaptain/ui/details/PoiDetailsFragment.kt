@@ -8,13 +8,16 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.garmin.garminkaptain.R
 import com.garmin.garminkaptain.TAG
+import com.garmin.garminkaptain.data.Resource
+import com.garmin.garminkaptain.data.ReviewSummary
 import com.garmin.garminkaptain.databinding.PoiDetailsFragment2Binding
 import com.garmin.garminkaptain.viewModel.PoiViewModel
 
@@ -23,10 +26,10 @@ class PoiDetailsFragment : Fragment() {
     private val args: PoiDetailsFragmentArgs by navArgs()
 
     // Creates a single ViewModel per activity
-    private val viewModel: PoiViewModel by activityViewModels()
+//    private val viewModel: PoiViewModel by activityViewModels()
 
     // Creates a different ViewModel for each Fragment
-//    private val viewModel: PoiViewModel by viewModels()
+    private val viewModel: PoiViewModel by viewModels()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -58,18 +61,39 @@ class PoiDetailsFragment : Fragment() {
                 binding.poiProgress.visibility = if (it) VISIBLE else GONE
             })
 
+        viewModel.getPoiSummary(args.poiId)
+            .observe(viewLifecycleOwner, { resource ->
+                resource.let {
+                    when (resource) {
+                        is Resource.Error -> {
+                            Toast.makeText(requireContext(), "Error", Toast.LENGTH_SHORT).show()
+                        }
+                        is Resource.Loading -> {
+                            showProgressIndicator()
+                        }
+                        is Resource.Success -> {
+                            hideProgressIndicator()
+                            resource.data.let {
+                                val summary: ReviewSummary = it as ReviewSummary
+                                binding.apply {
+                                    poiDetailsGroup.visibility = VISIBLE
+                                    poiRatingView.rating = summary.averageRating.toFloat()
+                                    poiNumReviewsView.text = getString(R.string.label_num_reviews, summary.numberOfReviews)
+                                    poiViewReviewsButton.isEnabled = summary.numberOfReviews > 0
+                                }
+                            }
+                        }
+                    }
+                }
+            })
+
         viewModel.getPoi(args.poiId)
             .observe(viewLifecycleOwner, { dto ->
                 println(dto.toString())
                 dto?.let {
                     binding.apply {
-                        poiDetailsGroup.visibility = VISIBLE
                         poiNameView.text = dto.poi.name
                         poiTypeView.text = dto.poi.poiType
-                        poiRatingView.rating = dto.reviewSummary.averageRating.toFloat()
-                        poiNumReviewsView.text =
-                            getString(R.string.label_num_reviews, dto.reviewSummary.numberOfReviews)
-                        poiViewReviewsButton.isEnabled = dto.reviewSummary.numberOfReviews > 0
                         poiViewReviewsButton.setOnClickListener {
                             findNavController().navigate(
                                 PoiDetailsFragmentDirections.actionPoiDetailsFragmentToPoiReviewsFragment(args.poiId)
@@ -78,6 +102,14 @@ class PoiDetailsFragment : Fragment() {
                     }
                 }
             })
+    }
+
+    private fun showProgressIndicator() {
+        binding.poiProgress.visibility = VISIBLE
+    }
+
+    private fun hideProgressIndicator() {
+        binding.poiProgress.visibility = GONE
     }
 
     override fun onStart() {
